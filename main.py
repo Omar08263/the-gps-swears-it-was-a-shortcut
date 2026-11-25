@@ -20,6 +20,9 @@ def main() -> None:
     assert len(data) == EXPECTED_BYTES, f"line is {len(data)} bytes, expected {EXPECTED_BYTES}"
     assert 1 <= len(data) <= 200, "line must be 1-200 characters"
     assert data == data.strip(), "line must not be only whitespace"
+    # The gate reads one line: a newline anywhere would split the entry.
+    assert b"\n" not in data and b"\r" not in data, "line must contain no newline"
+    assert data.decode("utf-8").count("\n") == 0, "line must be a single line"
     out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR", "/output")
     path = os.path.join(out_dir, "entry.txt")
     os.makedirs(out_dir, exist_ok=True)
